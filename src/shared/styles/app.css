@@ -19,12 +19,12 @@ code {
 }
 
 :root {
-	--background: oklch(1 0 0);
-	--foreground: oklch(0.141 0.005 285.823);
-	--card: oklch(1 0 0);
-	--card-foreground: oklch(0.141 0.005 285.823);
-	--popover: oklch(1 0 0);
-	--popover-foreground: oklch(0.141 0.005 285.823);
+	--background: #f2e8d5;
+	--foreground: #2c2c2c;
+	--card: #f2e8d5;
+	--card-foreground: #2c2c2c;
+	--popover: #f2e8d5;
+	--popover-foreground: #2c2c2c;
 	--primary: oklch(0.21 0.006 285.885);
 	--primary-foreground: oklch(0.985 0 0);
 	--secondary: oklch(0.967 0.001 286.375);

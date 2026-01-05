@@ -1,145 +1,133 @@
-import { Minus, Plus, WalletCards, Zap } from "lucide-react";
+import { reatomComponent } from "@reatom/react";
+import { Minus, Plus, WalletCards, XIcon, Zap } from "lucide-react";
 
 import { cn } from "@/shared/lib/css";
-import { COLOR_CONFIG, type MarketColor } from "@/shared/lib/game-data";
+import {
+	COLOR_CONFIG,
+	type MarketColor,
+	type PortfolioValueType,
+} from "@/shared/lib/game-data";
 import { Button } from "@/shared/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/shared/ui/card";
+import { Input } from "@/shared/ui/input";
 
-interface CounterProps {
-	label: string;
-	value: number;
-	onChange: (val: number) => void;
-	colorClass: string;
-	showQuickAdd?: boolean;
-	icon: React.ReactNode;
-}
+import { portfolio } from "@/model";
 
-function Counter({
-	label,
-	value,
-	onChange,
-	colorClass,
-	showQuickAdd,
+const CounterLabel = ({
 	icon,
-}: CounterProps) {
+	label,
+	children,
+}: {
+	icon: React.ReactNode;
+	label: string;
+	children: React.ReactNode;
+}) => {
 	return (
-		<div className="mb-4 flex flex-col gap-2 last:mb-0">
-			<div className="flex items-center gap-2 font-semibold text-sm uppercase tracking-wide opacity-80">
+		<div className="flex flex-col gap-1">
+			<CardDescription className="flex items-center gap-1">
 				{icon}
 				<span>{label}</span>
-			</div>
-
-			<div className="flex items-center gap-2">
-				<Button
-					className="size-10 shrink-0"
-					disabled={value <= 0}
-					onClick={() => onChange(Math.max(0, value - 1))}
-					size="icon"
-					variant="outline"
-				>
-					<Minus className="size-4" />
-				</Button>
-
-				<div
-					className={cn(
-						"flex h-10 flex-1 items-center justify-center rounded border-2 bg-white font-bold text-xl",
-						colorClass
-					)}
-				>
-					{value}
-				</div>
-
-				<Button
-					className="size-10 shrink-0"
-					onClick={() => onChange(value + 1)}
-					size="icon"
-					variant="outline"
-				>
-					<Plus className="size-4" />
-				</Button>
-			</div>
-
-			{showQuickAdd && (
-				<div className="flex justify-end gap-2">
-					<Button
-						className="h-7 text-xs"
-						onClick={() => onChange(value + 1)}
-						size="sm"
-						variant="secondary"
-					>
-						+1
-					</Button>
-					<Button
-						className="h-7 text-xs"
-						onClick={() => onChange(value + 3)}
-						size="sm"
-						variant="secondary"
-					>
-						+3
-					</Button>
-					<Button
-						className="h-7 text-xs"
-						onClick={() => onChange(value + 5)}
-						size="sm"
-						variant="secondary"
-					>
-						+5
-					</Button>
-				</div>
-			)}
+			</CardDescription>
+			{children}
 		</div>
 	);
-}
+};
+
+const Counter = reatomComponent(
+	({
+		color,
+		colorClass,
+		type,
+	}: {
+		color: MarketColor;
+		colorClass: string;
+		type: PortfolioValueType;
+		showQuickAdd?: boolean;
+	}) => {
+		const value = portfolio[color][type]();
+		const onChange = (value: number) => {
+			portfolio[color][type].set(value);
+		};
+
+		return (
+			<div className="flex items-center gap-1">
+				<Button onClick={() => onChange(0)} size="icon-sm" variant="ghost">
+					<XIcon />
+				</Button>
+				<Button
+					disabled={value <= 0}
+					onClick={() => onChange(Math.max(0, value - 1))}
+					size="icon-sm"
+				>
+					<Minus />
+				</Button>
+
+				<Input
+					className={cn("h-8 text-center", colorClass)}
+					min={0}
+					onChange={(e) => onChange(Number(e.target.value))}
+					type="number"
+					value={value}
+				/>
+
+				<Button onClick={() => onChange(value + 1)} size="icon-sm">
+					<Plus />
+				</Button>
+				<Button
+					onClick={() => onChange(value + 3)}
+					size="sm"
+					variant="secondary"
+				>
+					+3
+				</Button>
+				<Button
+					onClick={() => onChange(value + 5)}
+					size="sm"
+					variant="secondary"
+				>
+					+5
+				</Button>
+			</div>
+		);
+	}
+);
 
 interface PlayerInputProps {
 	color: MarketColor;
-	regular: number;
-	risky: number;
-	onChange: (updates: { regular?: number; risky?: number }) => void;
 }
 
-export function PlayerInput({
-	color,
-	regular,
-	risky,
-	onChange,
-}: PlayerInputProps) {
+export const PlayerInput = ({ color }: PlayerInputProps) => {
 	const config = COLOR_CONFIG[color];
 
 	return (
 		<Card className={cn("border-l-4", config.border)}>
-			<CardHeader className="bg-gray-50/50 px-4 py-3">
-				<CardTitle
-					className={cn("flex items-center gap-2 text-lg", config.text)}
-				>
-					<div
-						className={cn(
-							"h-3 w-3 rounded-full",
-							config.bg.replace("bg-", "bg-").replace("100", "500")
-						)}
-					/>
-					{config.label}
-				</CardTitle>
+			<CardHeader>
+				<CardTitle className={config.text}>{config.label}</CardTitle>
 			</CardHeader>
-			<CardContent className="px-4 pt-4 pb-4">
-				<Counter
-					colorClass={cn(config.border, config.text)}
-					icon={<WalletCards className="size-4" />}
-					label="Обычные"
-					onChange={(v) => onChange({ regular: v })}
-					showQuickAdd
-					value={regular}
-				/>
-
-				<Counter
-					colorClass={cn(config.border, config.text)}
-					icon={<Zap className="size-4" />}
-					label="Рисковые (x2)"
-					onChange={(v) => onChange({ risky: v })}
-					showQuickAdd={false}
-					value={risky}
-				/>
+			<CardContent className="flex flex-col gap-2">
+				<CounterLabel icon={<WalletCards className="size-4" />} label="Обычные">
+					<Counter
+						color={color}
+						colorClass={cn(config.border, config.text)}
+						showQuickAdd
+						type="regular"
+					/>
+				</CounterLabel>
+				<CounterLabel icon={<Zap className="size-4" />} label="Рисковые (x2)">
+					<Counter
+						color={color}
+						colorClass={cn(config.border, config.text)}
+						showQuickAdd={false}
+						type="risky"
+					/>
+				</CounterLabel>
 			</CardContent>
 		</Card>
 	);
-}
+};

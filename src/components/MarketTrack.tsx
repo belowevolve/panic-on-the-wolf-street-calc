@@ -1,3 +1,5 @@
+import { reatomComponent } from "@reatom/react";
+
 import { cn } from "@/shared/lib/css";
 import {
 	COLOR_CONFIG,
@@ -6,24 +8,19 @@ import {
 } from "@/shared/lib/game-data";
 import { Badge } from "@/shared/ui/badge";
 
+import { marketIndex } from "@/model";
+
 interface MarketTrackProps {
 	color: MarketColor;
-	currentIndex: number;
-	onChange: (index: number) => void;
 }
 
-export function MarketTrack({
-	color,
-	currentIndex,
-	onChange,
-}: MarketTrackProps) {
+export const MarketTrack = reatomComponent(({ color }: MarketTrackProps) => {
 	const scale = MARKET_SCALES[color];
 	const config = COLOR_CONFIG[color];
+	const currentIndex = marketIndex[color]();
 
 	return (
-		<div
-			className={cn("rounded-lg border-2 p-3 sm:p-4", config.bg, config.border)}
-		>
+		<div className={cn("rounded-lg border-2 p-2", config.bg, config.border)}>
 			<div className="mb-4 flex items-center justify-between">
 				<h3
 					className={cn(
@@ -56,25 +53,22 @@ export function MarketTrack({
 							"font-bold text-xs sm:text-base",
 							idx === currentIndex
 								? cn(
-										"z-10 scale-110 border-2 bg-white shadow-lg ring-2 ring-offset-2 ring-offset-transparent",
+										"z-10 scale-110 bg-white shadow-lg ring-1 ring-offset-1 ring-offset-transparent",
 										config.text,
 										config.border,
 										config.border.replace("border-", "ring-")
 									)
 								: "border-black/5 bg-white/30 text-gray-700 hover:bg-white/50"
 						)}
+						// biome-ignore lint/suspicious/noArrayIndexKey: index is used as key
 						key={idx}
-						onClick={() => onChange(idx)}
+						onClick={() => marketIndex[color].set(idx)}
 						type="button"
 					>
 						{value}
 					</button>
 				))}
 			</div>
-
-			<div className="mt-2 text-center font-serif text-black text-xs italic opacity-60">
-				Нажмите на значение для изменения
-			</div>
 		</div>
 	);
-}
+});

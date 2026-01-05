@@ -41,6 +41,14 @@ export const COLOR_CONFIG: Record<
 	},
 };
 
+export interface PortfolioValue {
+	regular: number;
+	risky: number;
+}
+
+export type PortfolioValueType = keyof PortfolioValue;
+export type Portfolio = Record<MarketColor, PortfolioValue>;
+
 /**
  * Calculates income for a specific color.
  * Income = (Price * N_regular) + (Price * 2 * N_risky)
@@ -49,15 +57,15 @@ export const COLOR_CONFIG: Record<
 export function calculateIncome(
 	color: MarketColor,
 	marketIndex: number,
-	regularCards: number,
-	riskyCards: number
+	portfolioValue: PortfolioValue
 ): number {
 	const scale = MARKET_SCALES[color];
+
 	// Ensure index is within bounds, clamp if necessary or assume caller handles it.
 	// The requirement says "Marker cannot go left of min or right of max".
 	// We'll assume valid index is passed, but safe access is good.
 	const safeIndex = Math.max(0, Math.min(marketIndex, scale.length - 1));
 	const price = scale[safeIndex];
 
-	return price * regularCards + price * 2 * riskyCards;
+	return price * portfolioValue.regular + price * 2 * portfolioValue.risky;
 }
