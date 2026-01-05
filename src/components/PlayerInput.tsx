@@ -31,13 +31,13 @@ function Counter({
 
 			<div className="flex items-center gap-2">
 				<Button
-					className="h-10 w-10 shrink-0"
+					className="size-10 shrink-0"
 					disabled={value <= 0}
 					onClick={() => onChange(Math.max(0, value - 1))}
 					size="icon"
 					variant="outline"
 				>
-					<Minus className="h-4 w-4" />
+					<Minus className="size-4" />
 				</Button>
 
 				<div
@@ -50,12 +50,12 @@ function Counter({
 				</div>
 
 				<Button
-					className="h-10 w-10 shrink-0"
+					className="size-10 shrink-0"
 					onClick={() => onChange(value + 1)}
 					size="icon"
 					variant="outline"
 				>
-					<Plus className="h-4 w-4" />
+					<Plus className="size-4" />
 				</Button>
 			</div>
 
@@ -124,19 +124,19 @@ export function PlayerInput({
 			<CardContent className="px-4 pt-4 pb-4">
 				<Counter
 					colorClass={cn(config.border, config.text)}
-					icon={<WalletCards className="h-4 w-4" />}
+					icon={<WalletCards className="size-4" />}
 					label="Обычные"
 					onChange={(v) => onChange({ regular: v })}
-					showQuickAdd={true}
+					showQuickAdd
 					value={regular}
 				/>
 
 				<Counter
 					colorClass={cn(config.border, config.text)}
-					icon={<Zap className="h-4 w-4" />}
+					icon={<Zap className="size-4" />}
 					label="Рисковые (x2)"
 					onChange={(v) => onChange({ risky: v })}
-					showQuickAdd={false} // Maybe not needed for risky as much, but user didn't explicitly demand it
+					showQuickAdd={false}
 					value={risky}
 				/>
 			</CardContent>

@@ -53,7 +53,7 @@ export function ScoreBoard({ marketIndices, portfolio }: ScoreBoardProps) {
 								<div className="flex items-center gap-3">
 									<div
 										className={cn(
-											"h-4 w-4 rounded-sm border",
+											"size-4 rounded-sm border",
 											config.bg.replace("100", "500")
 										)}
 									/>
@@ -88,9 +88,9 @@ export function ScoreBoard({ marketIndices, portfolio }: ScoreBoardProps) {
 						)}
 					>
 						{total < 0 ? (
-							<TrendingDown className="h-10 w-10" />
+							<TrendingDown className="size-10" />
 						) : (
-							<TrendingUp className="h-10 w-10" />
+							<TrendingUp className="size-10" />
 						)}
 						{total > 0 ? "+" : ""}
 						{total}
