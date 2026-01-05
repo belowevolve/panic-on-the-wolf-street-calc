@@ -8,31 +8,27 @@ import {
 	type PortfolioValueType,
 } from "@/shared/lib/game-data";
 import { Button } from "@/shared/ui/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/shared/ui/card";
+import { Card, CardContent, CardDescription } from "@/shared/ui/card";
 import { Input } from "@/shared/ui/input";
 
 import { portfolio } from "@/model";
 
 const CounterLabel = ({
+	className,
 	icon,
 	label,
 	children,
 }: {
 	icon: React.ReactNode;
+	className?: string;
 	label: string;
 	children: React.ReactNode;
 }) => {
 	return (
 		<div className="flex flex-col gap-1">
-			<CardDescription className="flex items-center gap-1">
+			<CardDescription className={cn("flex items-center gap-1", className)}>
 				{icon}
-				<span>{label}</span>
+				{label && <span>{label}</span>}
 			</CardDescription>
 			{children}
 		</div>
@@ -107,11 +103,12 @@ export const PlayerInput = ({ color }: PlayerInputProps) => {
 
 	return (
 		<Card className={cn("border-l-4", config.border)}>
-			<CardHeader>
-				<CardTitle className={config.text}>{config.label}</CardTitle>
-			</CardHeader>
 			<CardContent className="flex flex-col gap-2">
-				<CounterLabel icon={<WalletCards className="size-4" />} label="Обычные">
+				<CounterLabel
+					className={config.text}
+					icon={<WalletCards className="size-4" />}
+					label="Обычные"
+				>
 					<Counter
 						color={color}
 						colorClass={cn(config.border, config.text)}
@@ -119,7 +116,11 @@ export const PlayerInput = ({ color }: PlayerInputProps) => {
 						type="regular"
 					/>
 				</CounterLabel>
-				<CounterLabel icon={<Zap className="size-4" />} label="Рисковые (x2)">
+				<CounterLabel
+					className={config.text}
+					icon={<Zap className="size-4" />}
+					label="Рисковые (x2)"
+				>
 					<Counter
 						color={color}
 						colorClass={cn(config.border, config.text)}

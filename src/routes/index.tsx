@@ -2,6 +2,7 @@ import { reatomComponent } from "@reatom/react";
 import { createFileRoute } from "@tanstack/react-router";
 import { ChartCandlestickIcon, WalletCardsIcon } from "lucide-react";
 
+import { cn } from "@/shared/lib/css";
 import { MARKET_COLORS } from "@/shared/lib/game-data";
 import { Button } from "@/shared/ui/button";
 
@@ -16,7 +17,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
 	return (
-		<div className="min-h-dvh pb-20 font-serif">
+		<div className="min-h-dvh font-serif">
 			<Header />
 			<main className="mx-auto max-w-2xl p-2">
 				<Scene />
@@ -41,15 +42,14 @@ const Scene = reatomComponent(() => {
 const Market = () => {
 	return (
 		<section className="space-y-2">
-			<h2 className="border-black border-b-2 pb-1 font-bold text-2xl uppercase">
-				Рынок
-			</h2>
 			{MARKET_COLORS.map((color) => (
 				<MarketTrack color={color} key={color} />
 			))}
-			<Button className="w-full" onClick={() => screen.set("portfolio")}>
-				Портфель
-			</Button>
+			<BottomAction>
+				<Button className="w-full" onClick={() => screen.set("portfolio")}>
+					Портфель
+				</Button>
+			</BottomAction>
 		</section>
 	);
 };
@@ -57,15 +57,14 @@ const Market = () => {
 const Portfolio = () => {
 	return (
 		<section className="space-y-2">
-			<h2 className="border-black border-b-2 pb-1 font-bold text-2xl uppercase">
-				Портфель
-			</h2>
 			{MARKET_COLORS.map((color) => (
 				<PlayerInput color={color} key={color} />
 			))}
-			<Button className="w-full" onClick={() => screen.set("score")}>
-				Результат
-			</Button>
+			<BottomAction>
+				<Button className="w-full" onClick={() => screen.set("score")}>
+					Результат
+				</Button>
+			</BottomAction>
 		</section>
 	);
 };
@@ -73,19 +72,21 @@ const Portfolio = () => {
 const Score = () => {
 	return (
 		<section className="space-y-2">
-			<h2 className="border-black border-b-2 pb-1 font-bold text-2xl uppercase">
-				Результат
-			</h2>
 			<ScoreBoard />
-			<Button
-				className="w-full"
-				onClick={() => {
-					resetPortfolio();
-					screen.set("portfolio");
-				}}
-			>
-				Назад
-			</Button>
+			<BottomAction className="flex gap-2">
+				<Button
+					className="grow"
+					onClick={() => {
+						resetPortfolio();
+						screen.set("portfolio");
+					}}
+				>
+					Назад
+				</Button>
+				<Button onClick={() => screen.set("market")} size="icon">
+					<ChartCandlestickIcon />
+				</Button>
+			</BottomAction>
 		</section>
 	);
 };
@@ -103,7 +104,7 @@ const Header = reatomComponent(() => {
 		<header className="sticky top-0 z-50 bg-[#2c2c2c] p-4 text-[#f2e8d5] shadow-md">
 			<div className="mx-auto flex max-w-2xl items-center justify-between">
 				<h1 className="font-bold text-xl uppercase tracking-widest">
-					Вулф-Стрит
+					{currentScreen === "portfolio" ? "Портфель" : "Вулф-Стрит"}
 				</h1>
 				<Button onClick={startGame} size="icon">
 					{currentScreen === "market" ? (
@@ -116,3 +117,22 @@ const Header = reatomComponent(() => {
 		</header>
 	);
 });
+
+const BottomAction = ({
+	className,
+	children,
+}: {
+	className?: string;
+	children: React.ReactNode;
+}) => {
+	return (
+		<div
+			className={cn(
+				"fixed inset-x-0 bottom-0 mx-auto max-w-2xl p-2",
+				className
+			)}
+		>
+			{children}
+		</div>
+	);
+};

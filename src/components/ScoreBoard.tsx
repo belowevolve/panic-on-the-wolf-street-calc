@@ -11,8 +11,8 @@ import { breakdown, total } from "@/model";
 
 export const ScoreBoard = () => {
 	return (
-		<Card className="overflow-hidden border-4 border-gray-400 border-double bg-[#fdfbf7] shadow-xl">
-			<div className="border-gray-400 border-b-4 border-double bg-gray-900 px-6 py-4 text-center text-[#fdfbf7]">
+		<Card className="overflow-hidden border-4 border-gray-400 border-double bg-[#fdfbf7] pt-0 shadow-xl">
+			<div className="border-gray-400 border-b bg-gray-900 px-6 py-4 text-center text-[#fdfbf7]">
 				<h2 className="font-bold font-serif text-3xl uppercase tracking-widest">
 					Итоги Раунда
 				</h2>
