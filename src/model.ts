@@ -8,10 +8,8 @@ import {
 	STARTING_INDEX,
 } from "@/shared/lib/game-data";
 
-export const screen = atom<"market" | "portfolio" | "score">(
-	"market",
-	"[SCREEN]"
-);
+export type GameScreen = "market" | "portfolio" | "score";
+export const screen = atom<GameScreen>("market", "[SCREEN]");
 
 export const marketIndex = {
 	red: atom(STARTING_INDEX, "[MARKET INDEX] RED"),

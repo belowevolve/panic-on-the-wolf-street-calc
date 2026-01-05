@@ -136,3 +136,8 @@ code {
 		@apply bg-background text-foreground;
 	}
 }
+
+::view-transition-old(root),
+::view-transition-new(root) {
+	animation-duration: 0.3s;
+}

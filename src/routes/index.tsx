@@ -9,7 +9,7 @@ import { Button } from "@/shared/ui/button";
 import { MarketTrack } from "@/components/MarketTrack";
 import { PlayerInput } from "@/components/PlayerInput";
 import { ScoreBoard } from "@/components/ScoreBoard";
-import { resetPortfolio, screen } from "@/model";
+import { type GameScreen, resetPortfolio, screen } from "@/model";
 
 export const Route = createFileRoute("/")({
 	component: Index,
@@ -39,6 +39,16 @@ const Scene = reatomComponent(() => {
 	}
 });
 
+const transitionTo = (nextScreen: GameScreen) => {
+	if (!document.startViewTransition) {
+		screen.set(nextScreen);
+		return;
+	}
+	document.startViewTransition(() => {
+		screen.set(nextScreen);
+	});
+};
+
 const Market = () => {
 	return (
 		<section className="space-y-2">
@@ -46,7 +56,7 @@ const Market = () => {
 				<MarketTrack color={color} key={color} />
 			))}
 			<BottomAction>
-				<Button className="w-full" onClick={() => screen.set("portfolio")}>
+				<Button className="w-full" onClick={() => transitionTo("portfolio")}>
 					Портфель
 				</Button>
 			</BottomAction>
@@ -61,7 +71,7 @@ const Portfolio = () => {
 				<PlayerInput color={color} key={color} />
 			))}
 			<BottomAction>
-				<Button className="w-full" onClick={() => screen.set("score")}>
+				<Button className="w-full" onClick={() => transitionTo("score")}>
 					Результат
 				</Button>
 			</BottomAction>
@@ -78,12 +88,12 @@ const Score = () => {
 					className="grow"
 					onClick={() => {
 						resetPortfolio();
-						screen.set("portfolio");
+						transitionTo("portfolio");
 					}}
 				>
 					Назад
 				</Button>
-				<Button onClick={() => screen.set("market")} size="icon">
+				<Button onClick={() => transitionTo("market")} size="icon">
 					<ChartCandlestickIcon />
 				</Button>
 			</BottomAction>
@@ -95,9 +105,9 @@ const Header = reatomComponent(() => {
 	const currentScreen = screen();
 	const startGame = () => {
 		if (currentScreen === "market") {
-			screen.set("portfolio");
+			transitionTo("portfolio");
 		} else {
-			screen.set("market");
+			transitionTo("market");
 		}
 	};
 	return (

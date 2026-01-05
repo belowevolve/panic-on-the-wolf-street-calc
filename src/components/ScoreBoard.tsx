@@ -1,6 +1,8 @@
+import NumberFlow, { continuous } from "@number-flow/react";
 import type { Computed } from "@reatom/core";
 import { reatomComponent } from "@reatom/react";
 import { TrendingDown, TrendingUp } from "lucide-react";
+import { useEffect, useState } from "react";
 
 import { cn } from "@/shared/lib/css";
 import { COLOR_CONFIG } from "@/shared/lib/game-data";
@@ -62,16 +64,18 @@ const Breakdown = () => {
 
 const BreakDownItem = reatomComponent(
 	({ income }: { income: Computed<number> }) => {
-		const isNegative = income() < 0;
+		const value = income();
+		const isNegative = value < 0;
 		return (
 			<div
 				className={cn(
-					"flex items-center gap-2 font-bold font-mono",
+					"fade-in slide-in-from-right flex animate-in items-center gap-2 font-bold font-mono",
 					isNegative ? "text-red-600" : "text-green-700"
 				)}
+				key={value}
 			>
 				{isNegative ? "" : "+"}
-				{income()}
+				{value}
 			</div>
 		);
 	}
@@ -90,20 +94,33 @@ const Total = () => {
 
 const TotalValue = reatomComponent(() => {
 	const totalValue = total();
+	const [value, setValue] = useState(0);
+	useEffect(() => {
+		setValue(totalValue);
+	}, [totalValue]);
+	const isNegative = totalValue < 0;
 	return (
 		<div
 			className={cn(
-				"flex items-center justify-center gap-4 font-black font-mono text-5xl tracking-tighter",
-				totalValue < 0 ? "text-red-600" : "text-gray-900"
+				"flex items-center justify-center gap-2 font-black font-mono text-4xl tracking-tighter",
+				isNegative ? "text-red-600" : "text-gray-900"
 			)}
 		>
-			{totalValue < 0 ? (
+			{isNegative ? (
 				<TrendingDown className="size-10" />
 			) : (
 				<TrendingUp className="size-10" />
 			)}
-			{totalValue > 0 ? "+" : ""}
-			{totalValue}
+
+			<NumberFlow
+				format={{
+					style: "currency",
+					currency: "USD",
+					maximumFractionDigits: 0,
+				}}
+				plugins={[continuous]}
+				value={value}
+			/>
 		</div>
 	);
 });
